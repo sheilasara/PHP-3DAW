@@ -1,62 +1,73 @@
-    //ainda está incompleto
-
-
-
-<?php
-session_start();
-
-if (!isset($_SESSION['usuario_id'])) {
-    header('Location: index.html');
-    exit();
-}
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $id_pergunta = $_POST["id_pergunta"];
-    $pergunta = $_POST["pergunta"];
-    $opcao1 = $_POST["opcao1"];
-    $opcao2 = $_POST["opcao2"];
-    $opcao3 = $_POST["opcao3"];
-    $correta = $_POST["correta"];
-    
-    // Criar arquivo perguntas.txt se não existir
-    if (!file_exists("perguntas.txt")) {
-        $arqPerguntas = fopen("perguntas.txt", "w") or die("Erro ao criar arquivo");
-        $linha = "id_pergunta;pergunta;tipo;criador\n";
-        fwrite($arqPerguntas, $linha);
-        fclose($arqPerguntas);
-    }
-    
-    fclose($arqPerguntas);
-    
-    if ($existe) {
-        echo "ID da pergunta já existe!<br>";
-        echo "<a href='criar_pergunta_mc.html'>Voltar</a>";
-        exit();
-    }
-    
-    // salva a pergunta
-    $arqPerguntas = fopen("perguntas.txt", "a") or die("Erro ao abrir arquivo");
-    $linha = $id_pergunta . ";" . $pergunta . ";" . "mc" . ";" . $_SESSION['usuario_id'] . "\n";
-    fwrite($arqPerguntas, $linha);
-    fclose($arqPerguntas);
-    
-    if (!file_exists("respostas.txt")) {
-        $arqRespostas = fopen("respostas.txt", "w") or die("Erro ao criar arquivo");
-        $linha = "id_pergunta;opcao1;opcao2;opcao3;correta\n";
-        fwrite($arqRespostas, $linha);
-        fclose($arqRespostas);
-    }
-    
-    // salva as respostas
-    $arqRespostas = fopen("respostas.txt", "a") or die("Erro ao abrir arquivo");
-    $linha = $id_pergunta . ";" . $opcao1 . ";" . $opcao2 . ";" . $opcao3 . ";" . $opcao4 . ";" . $correta . "\n";
-    fwrite($arqRespostas, $linha);
-    fclose($arqRespostas);
-    
-    echo "Pergunta de múltipla escolha criada com sucesso!<br>";
-    echo "<a href='menu.php'>Voltar ao menu</a><br>";
-    echo "<a href='criar_pergunta_mc.html'>Criar outra pergunta</a>";
-}
-
-
-?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Criar Pergunta Multipla Escolha</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Criar Pergunta de Multipla Escolha</h1>
+        <a href="menu.php">Voltar ao Menu</a>
+        
+        <?php
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $pergunta = $_POST['pergunta'];
+            $opcao_a = $_POST['opcao_a'];
+            $opcao_b = $_POST['opcao_b'];
+            $opcao_c = $_POST['opcao_c'];
+            $opcao_d = $_POST['opcao_d'];
+            $resposta_correta = $_POST['resposta_correta'];
+            
+            $id = 1;
+            if(file_exists("perguntas.txt")) {
+                $arqLeitura = fopen("perguntas.txt", "r");
+                while(!feof($arqLeitura)) {
+                    $linha = fgets($arqLeitura);
+                    if(!empty(trim($linha))) {
+                        $id++;
+                    }
+                }
+                fclose($arqLeitura);
+            }
+            
+            $linha = $id . ";multipla;" . $pergunta . ";" . $opcao_a . ";" . $opcao_b . ";" . $opcao_c . ";" . $opcao_d . ";" . $resposta_correta . "\n";
+            
+            $arqQuest = fopen("perguntas.txt", "a") or die("Erro ao abrir arquivo");
+            fwrite($arqQuest, $linha);
+            fclose($arqQuest);
+            
+            echo "<p class='success'>Pergunta de multipla escolha criada com sucesso! ID: " . $id . "</p>";
+        }
+        ?>
+        
+        <div class="form-box">
+            <form method="POST">
+                <label>Pergunta:</label>
+                <textarea name="pergunta" rows="4" required></textarea><br>
+                
+                <label>Opcao A:</label>
+                <input type="text" name="opcao_a" required><br>
+                
+                <label>Opcao B:</label>
+                <input type="text" name="opcao_b" required><br>
+                
+                <label>Opcao C:</label>
+                <input type="text" name="opcao_c" required><br>
+                
+                <label>Opcao D:</label>
+                <input type="text" name="opcao_d" required><br>
+                
+                <label>Resposta Correta:</label>
+                <select name="resposta_correta" required>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                </select><br>
+                
+                <button type="submit">Criar Pergunta</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
