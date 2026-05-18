@@ -1,0 +1,71 @@
+<?php
+    $msg = "";
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Incluir Aluno</title>
+
+    <script>
+        function validarFormulario() {
+
+            let matricula = document.forms["formAluno"]["matricula"].value;
+            let nome = document.forms["formAluno"]["nome"].value;
+            let email = document.forms["formAluno"]["email"].value;
+
+            // Verifica matrícula
+            if (matricula == "") {
+                alert("Digite a matrícula.");
+                return false;
+            }
+
+            // Verifica nome
+            if (nome == "") {
+                alert("Digite o nome.");
+                return false;
+            }
+
+            // Verifica email
+            if (email == "") {
+                alert("Digite o email.");
+                return false;
+            }
+
+            // Validação simples de email
+            if (email.indexOf("@") == -1 || email.indexOf(".") == -1) {
+                alert("Digite um email válido.");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+
+</head>
+<body>
+
+    <h1>Cadastrar Novo Aluno</h1>
+
+    <form name="formAluno"
+          action=""
+          method="POST"
+          onsubmit="return validarFormulario()">
+
+        Matrícula:
+        <input type="text" name="matricula">
+        <br><br>
+
+        Nome:
+        <input type="text" name="nome">
+        <br><br>
+
+        Email:
+        <input type="text" name="email">
+        <br><br>
+
+        <input type="submit" value="Cadastrar Aluno">
+    </form>
+
+</body>
+</html>
