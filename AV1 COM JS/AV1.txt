@@ -1,1 +1,3 @@
-AV1
+1;multipla;Qual a melhor forma de dar feedback a um funcionario?;Em publico para todos verem;Por e-mail com copia para todos;Em particular, de forma construtiva;Nao dar feedback;C
+2;multipla;Como lidar com um cliente insatisfeito?;Ignorar a reclamacao;Transferir a ligacao;Ouvir atentamente e oferecer solucao;Dizer que nao e problema seu;C
+3;texto;Cite 2 caracteristicas de um bom lider.;Comunicacao clara e empatia
