@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Criar conta — Falls Car</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<div class="tela-auth">
+    <div class="tela-auth__lateral">
+        <div class="topbar__marca" style="margin-bottom:2rem;"><span class="farol"></span> FALLS CAR</div>
+        <h1 style="font-size:2rem;">Crie sua conta<br>em 1 minuto.</h1>
+        <p class="texto-fraco" style="color:var(--neblina-200);max-width:320px;">
+            Cadastre-se para reservar veículos, pagar antecipado e acompanhar o histórico de locações.
+        </p>
+    </div>
+
+    <div class="tela-auth__form">
+        <div class="tela-auth__form-interna">
+            <h2>Criar conta</h2>
+            <p class="texto-fraco espaco-topo" style="margin-bottom:1.2rem;">Preencha seus dados de cliente.</p>
+
+            <div class="alerta alerta-erro" id="alerta"></div>
+
+            <form id="form-cadastro">
+                <div class="form-grupo">
+                    <label for="nome">Nome completo</label>
+                    <input type="text" id="nome" required placeholder="Seu nome completo">
+                </div>
+                <div class="linha">
+                    <div class="form-grupo">
+                        <label for="cpf">CPF</label>
+                        <input type="text" id="cpf" required placeholder="000.000.000-00">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="cnh">CNH</label>
+                        <input type="text" id="cnh" required placeholder="Número da habilitação">
+                    </div>
+                </div>
+                <div class="form-grupo">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" required placeholder="voce@email.com">
+                </div>
+                <div class="form-grupo">
+                    <label for="telefone">Telefone</label>
+                    <input type="text" id="telefone" placeholder="(00) 00000-0000">
+                </div>
+                <div class="form-grupo">
+                    <label for="endereco">Endereço</label>
+                    <input type="text" id="endereco" placeholder="Rua, número, cidade/UF">
+                </div>
+                <div class="form-grupo">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" required minlength="6" placeholder="Mínimo 6 caracteres">
+                </div>
+                <button type="submit" class="btn btn-primario btn-bloco" id="btn-criar">Criar conta</button>
+            </form>
+
+            <p class="texto-centro espaco-topo texto-fraco">
+                Já tem conta? <a href="login.html" style="color:var(--ambar-600);font-weight:600;">Entrar</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script>
+    const alerta = document.getElementById('alerta');
+    const botao = document.getElementById('btn-criar');
+
+    document.getElementById('form-cadastro').addEventListener('submit', async (evento) => {
+        evento.preventDefault();
+        ocultarAlerta(alerta);
+
+        const dados = {
+            nome: document.getElementById('nome').value.trim(),
+            cpf: document.getElementById('cpf').value.trim(),
+            cnh: document.getElementById('cnh').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            telefone: document.getElementById('telefone').value.trim(),
+            endereco: document.getElementById('endereco').value.trim(),
+            senha: document.getElementById('senha').value,
+        };
+
+        botao.disabled = true;
+        botao.textContent = 'Criando conta...';
+
+        try {
+            await API.cadastrar(dados);
+            await API.login(dados.email, dados.senha);
+            window.location.href = 'veiculos.html';
+        } catch (erro) {
+            mostrarAlerta(alerta, erro.message, 'erro');
+            botao.disabled = false;
+            botao.textContent = 'Criar conta';
+        }
+    });
+</script>
+</body>
+</html>

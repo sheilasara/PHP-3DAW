@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Falls Car — Locação de Veículos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="topbar__marca"><span class="farol"></span> FALLS CAR</div>
+    <nav class="topbar__nav">
+        <a href="index.html" class="ativo">Início</a>
+        <a href="veiculos.html">Veículos</a>
+        <a href="historico.html" id="nav-historico">Minhas locações</a>
+    </nav>
+    <div class="topbar__usuario" id="area-usuario"></div>
+</header>
+
+<section class="hero">
+    <div class="hero__conteudo">
+        <div class="hero__eyebrow">Reserva rápida · Retirada na sua cidade</div>
+        <h1>Alugue o carro certo,<br>sem burocracia.</h1>
+        <p class="subtitulo">
+            Escolha o veículo disponível na sua cidade, defina o período de 7, 15 ou 30 dias,
+            pague antecipado e retire na loja Falls Car mais próxima.
+        </p>
+        <div class="espaco-topo">
+            <a href="veiculos.html" class="btn btn-primario">Ver veículos disponíveis</a>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <h2>Como funciona</h2>
+    <div class="grid-veiculos">
+        <div class="card">
+            <h3>1. Escolha e reserve</h3>
+            <p class="texto-fraco">Filtre veículos disponíveis na cidade de retirada e escolha o período de locação: 7, 15 ou 30 dias.</p>
+        </div>
+        <div class="card">
+            <h3>2. Pague antecipado</h3>
+            <p class="texto-fraco">O pagamento integral é feito antes da retirada — sem isso a reserva não é confirmada.</p>
+        </div>
+        <div class="card">
+            <h3>3. Retire e devolva</h3>
+            <p class="texto-fraco">A locação inicia quando você retira o carro na loja. A devolução deve ocorrer na mesma cidade.</p>
+        </div>
+    </div>
+</div>
+
+<footer class="rodape">Falls Car</footer>
+
+<script src="../js/api.js"></script>
+<script>montarTopbar();</script>
+</body>
+</html>

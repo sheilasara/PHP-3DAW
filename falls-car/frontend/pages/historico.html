@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minhas locações — Falls Car</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="topbar__marca"><span class="farol"></span> FALLS CAR</div>
+    <nav class="topbar__nav">
+        <a href="index.html">Início</a>
+        <a href="veiculos.html">Veículos</a>
+        <a href="historico.html" class="ativo">Minhas locações</a>
+    </nav>
+    <div class="topbar__usuario" id="area-usuario"></div>
+</header>
+
+<div class="container">
+    <h2>Minhas locações</h2>
+
+    <div class="tabs">
+        <button class="ativo" data-status="">Todas</button>
+        <button data-status="pendente_pagamento">Aguardando pagamento</button>
+        <button data-status="confirmada">Confirmadas</button>
+        <button data-status="em_andamento">Em andamento</button>
+        <button data-status="concluida">Concluídas</button>
+        <button data-status="cancelada">Canceladas</button>
+    </div>
+
+    <div class="alerta alerta-erro" id="alerta"></div>
+    <div id="lista-reservas"></div>
+</div>
+
+<footer class="rodape">Falls Car</footer>
+
+<script src="../js/api.js"></script>
+<script>
+    exigirLogin();
+    montarTopbar();
+
+    const lista = document.getElementById('lista-reservas');
+    const alerta = document.getElementById('alerta');
+    let statusAtual = '';
+
+    function podeCancelar(reserva) {
+        if (!['pendente_pagamento', 'confirmada'].includes(reserva.status)) return false;
+        const inicio = new Date(reserva.data_inicio_prevista.replace(' ', 'T'));
+        const horasRestantes = (inicio.getTime() - Date.now()) / 3600000;
+        return horasRestantes >= 24;
+    }
+
+    function renderizar(reservas) {
+        if (reservas.length === 0) {
+            lista.innerHTML = '<p class="vazio">Nenhuma locação encontrada para este filtro.</p>';
+            return;
+        }
+
+        lista.innerHTML = reservas.map((r) => `
+            <div class="card" data-id="${r.id_reserva}">
+                <div class="linha" style="justify-content:space-between;align-items:flex-start;">
+                    <div>
+                        <h3 style="margin-bottom:0.3rem;">${r.marca} ${r.modelo} <span class="texto-fraco" style="font-weight:400;">#${r.id_reserva}</span></h3>
+                        <p class="texto-fraco">
+                            Retirada: ${formatarData(r.data_inicio_prevista)} · ${r.loja_retirada_nome} (${r.loja_retirada_cidade})<br>
+                            Devolução prevista: ${formatarData(r.data_fim_prevista)} · ${r.loja_devolucao_nome}<br>
+                            Período: ${r.periodo_dias} dias
+                        </p>
+                    </div>
+                    <div class="texto-centro">
+                        <span class="selo selo-${r.status}">${ROTULOS_STATUS[r.status] || r.status}</span>
+                        <div style="margin-top:0.5rem;font-weight:700;">${formatarMoeda(r.valor_total)}</div>
+                    </div>
+                </div>
+                <div class="linha espaco-topo" style="justify-content:flex-end;gap:0.6rem;">
+                    ${podeCancelar(r) ? `<button class="btn btn-perigo" data-acao="cancelar" data-id="${r.id_reserva}">Cancelar reserva</button>` : ''}
+                    ${r.status === 'confirmada' ? `<button class="btn btn-secundario" data-acao="retirada" data-id="${r.id_reserva}">Confirmar retirada</button>` : ''}
+                    ${r.status === 'em_andamento' ? `<button class="btn btn-secundario" data-acao="devolucao" data-id="${r.id_reserva}">Confirmar devolução</button>` : ''}
+                </div>
+            </div>
+        `).join('');
+
+        lista.querySelectorAll('[data-acao]').forEach((botao) => {
+            botao.addEventListener('click', () => tratarAcao(botao.dataset.acao, Number(botao.dataset.id)));
+        });
+    }
+
+    async function tratarAcao(acao, idReserva) {
+        ocultarAlerta(alerta);
+        try {
+            if (acao === 'cancelar') {
+                const motivo = prompt('Motivo do cancelamento (opcional):') || '';
+                if (!confirm('Tem certeza que deseja cancelar esta reserva?')) return;
+                await API.cancelarReserva(idReserva, motivo);
+            } else if (acao === 'retirada') {
+                const km = prompt('Informe a quilometragem atual do veículo na retirada:');
+                if (km === null) return;
+                await API.confirmarRetirada(idReserva, Number(km) || 0);
+            } else if (acao === 'devolucao') {
+                const km = prompt('Informe a quilometragem do veículo na devolução:');
+                if (km === null) return;
+                await API.confirmarDevolucao(idReserva, Number(km) || 0);
+            }
+            await carregar();
+        } catch (erro) {
+            mostrarAlerta(alerta, erro.message, 'erro');
+        }
+    }
+
+    async function carregar() {
+        try {
+            const reservas = await API.listarMinhasReservas(statusAtual);
+            renderizar(reservas);
+        } catch (erro) {
+            mostrarAlerta(alerta, erro.message, 'erro');
+        }
+    }
+
+    document.querySelectorAll('.tabs button').forEach((botao) => {
+        botao.addEventListener('click', () => {
+            document.querySelectorAll('.tabs button').forEach((b) => b.classList.remove('ativo'));
+            botao.classList.add('ativo');
+            statusAtual = botao.dataset.status;
+            carregar();
+        });
+    });
+
+    carregar();
+</script>
+</body>
+</html>

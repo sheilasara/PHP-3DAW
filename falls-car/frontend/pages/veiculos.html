@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veículos disponíveis — Falls Car</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="topbar__marca"><span class="farol"></span> FALLS CAR</div>
+    <nav class="topbar__nav">
+        <a href="index.html">Início</a>
+        <a href="veiculos.html" class="ativo">Veículos</a>
+        <a href="historico.html">Minhas locações</a>
+    </nav>
+    <div class="topbar__usuario" id="area-usuario"></div>
+</header>
+
+<div class="container">
+    <h2>Veículos disponíveis</h2>
+    <p class="texto-fraco">
+        Por regra da locadora, os veículos exibidos ficam sempre na mesma cidade escolhida para a retirada.
+    </p>
+
+    <div class="card espaco-topo">
+        <div class="linha">
+            <div class="form-grupo">
+                <label for="filtro-cidade">Cidade de retirada</label>
+                <select id="filtro-cidade">
+                    <option value="">Todas as cidades</option>
+                    <option value="Rio de Janeiro">Rio de Janeiro</option>
+                    <option value="São Paulo">São Paulo</option>
+                </select>
+            </div>
+            <div class="form-grupo">
+                <label for="filtro-categoria">Categoria</label>
+                <select id="filtro-categoria">
+                    <option value="">Todas as categorias</option>
+                    <option value="economico">Econômico</option>
+                    <option value="intermediario">Intermediário</option>
+                    <option value="suv">SUV</option>
+                    <option value="luxo">Luxo</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="alerta alerta-erro" id="alerta"></div>
+    <div id="sugestao-categoria" class="alerta alerta-sucesso"></div>
+
+    <div class="grid-veiculos" id="grid-veiculos">
+        <p class="texto-fraco">Carregando veículos...</p>
+    </div>
+</div>
+
+<footer class="rodape">Falls Car · Projeto acadêmico de sistema de locação de veículos</footer>
+
+<script src="../js/api.js"></script>
+<script>
+    montarTopbar();
+
+    const grid = document.getElementById('grid-veiculos');
+    const alerta = document.getElementById('alerta');
+    const sugestaoBox = document.getElementById('sugestao-categoria');
+    const filtroCidade = document.getElementById('filtro-cidade');
+    const filtroCategoria = document.getElementById('filtro-categoria');
+
+    const rotulosCategoria = {
+        economico: 'Econômico',
+        intermediario: 'Intermediário',
+        suv: 'SUV',
+        luxo: 'Luxo',
+    };
+
+    function renderizarVeiculos(veiculos) {
+        if (veiculos.length === 0) {
+            grid.innerHTML = '<p class="vazio">Nenhum veículo disponível para os filtros selecionados.</p>';
+            return;
+        }
+
+        grid.innerHTML = veiculos.map((v) => `
+            <div class="card-veiculo">
+                <div class="card-veiculo__topo">
+                    <div>
+                        <strong>${v.marca} ${v.modelo}</strong>
+                        <div class="texto-fraco" style="color:var(--neblina-200);font-size:0.8rem;">${v.ano} · ${v.cor}</div>
+                    </div>
+                    <span class="card-veiculo__placa">${v.placa}</span>
+                </div>
+                <div class="card-veiculo__corpo">
+                    <span class="card-veiculo__categoria">${rotulosCategoria[v.categoria] || v.categoria}</span>
+                    <div class="card-veiculo__preco">${formatarMoeda(v.valor_diaria)} <span>/ dia</span></div>
+                    <p class="texto-fraco" style="margin-top:0.6rem;">
+                        Retirada em ${v.loja_nome} — ${v.loja_cidade}
+                    </p>
+                </div>
+                <div class="card-veiculo__rodape">
+                    <a href="reserva.html?id=${v.id_veiculo}" class="btn btn-primario btn-bloco">Reservar</a>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function carregar() {
+        ocultarAlerta(alerta);
+        sugestaoBox.className = 'alerta';
+        grid.innerHTML = '<p class="texto-fraco">Carregando veículos...</p>';
+
+        try {
+            const resultado = await API.listarVeiculos({
+                cidade: filtroCidade.value,
+                categoria: filtroCategoria.value,
+            });
+
+            renderizarVeiculos(resultado.veiculos);
+
+            if (resultado.sugestao_categoria_superior) {
+                const s = resultado.sugestao_categoria_superior;
+                mostrarAlerta(
+                    sugestaoBox,
+                    `Não há veículos disponíveis nesta categoria, mas encontramos uma opção de categoria superior: ${s.marca} ${s.modelo} (${rotulosCategoria[s.categoria]}).`,
+                    'sucesso'
+                );
+            }
+        } catch (erro) {
+            grid.innerHTML = '';
+            mostrarAlerta(alerta, erro.message, 'erro');
+        }
+    }
+
+    filtroCidade.addEventListener('change', carregar);
+    filtroCategoria.addEventListener('change', carregar);
+    carregar();
+</script>
+</body>
+</html>

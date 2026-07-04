@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meu perfil — Falls Car</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="topbar__marca"><span class="farol"></span> FALLS CAR</div>
+    <nav class="topbar__nav">
+        <a href="index.html">Início</a>
+        <a href="veiculos.html">Veículos</a>
+        <a href="historico.html">Minhas locações</a>
+    </nav>
+    <div class="topbar__usuario" id="area-usuario"></div>
+</header>
+
+<div class="container" style="max-width:560px;">
+    <h2>Meu perfil</h2>
+
+    <div class="alerta alerta-erro" id="alerta"></div>
+    <div class="alerta alerta-sucesso" id="alerta-sucesso"></div>
+
+    <form id="form-perfil" class="card">
+        <div class="form-grupo">
+            <label>Nome</label>
+            <input type="text" id="nome" disabled>
+        </div>
+        <div class="linha">
+            <div class="form-grupo">
+                <label>CPF</label>
+                <input type="text" id="cpf" disabled>
+            </div>
+            <div class="form-grupo">
+                <label>CNH</label>
+                <input type="text" id="cnh" disabled>
+            </div>
+        </div>
+        <div class="form-grupo">
+            <label>E-mail</label>
+            <input type="email" id="email" disabled>
+        </div>
+        <div class="form-grupo">
+            <label for="telefone">Telefone</label>
+            <input type="text" id="telefone">
+        </div>
+        <div class="form-grupo">
+            <label for="endereco">Endereço</label>
+            <input type="text" id="endereco">
+        </div>
+        <p class="form-ajuda"></p>
+        <button type="submit" class="btn btn-primario btn-bloco" id="btn-salvar">Salvar alterações</button>
+    </form>
+</div>
+
+<script src="../js/api.js"></script>
+<script>
+    exigirLogin();
+    montarTopbar();
+
+    const alerta = document.getElementById('alerta');
+    const alertaSucesso = document.getElementById('alerta-sucesso');
+
+    async function carregarPerfil() {
+        try {
+            const cliente = await API.obterPerfil();
+            document.getElementById('nome').value = cliente.nome;
+            document.getElementById('cpf').value = cliente.cpf;
+            document.getElementById('cnh').value = cliente.cnh;
+            document.getElementById('email').value = cliente.email;
+            document.getElementById('telefone').value = cliente.telefone || '';
+            document.getElementById('endereco').value = cliente.endereco || '';
+        } catch (erro) {
+            mostrarAlerta(alerta, erro.message, 'erro');
+        }
+    }
+
+    document.getElementById('form-perfil').addEventListener('submit', async (evento) => {
+        evento.preventDefault();
+        ocultarAlerta(alerta);
+        ocultarAlerta(alertaSucesso);
+
+        const botao = document.getElementById('btn-salvar');
+        botao.disabled = true;
+        botao.textContent = 'Salvando...';
+
+        try {
+            await API.atualizarPerfil({
+                telefone: document.getElementById('telefone').value.trim(),
+                endereco: document.getElementById('endereco').value.trim(),
+            });
+            mostrarAlerta(alertaSucesso, 'Perfil atualizado com sucesso.', 'sucesso');
+        } catch (erro) {
+            mostrarAlerta(alerta, erro.message, 'erro');
+        } finally {
+            botao.disabled = false;
+            botao.textContent = 'Salvar alterações';
+        }
+    });
+
+    carregarPerfil();
+</script>
+</body>
+</html>
