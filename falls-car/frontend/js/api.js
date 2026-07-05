@@ -1,10 +1,3 @@
-/**
- * Cliente central de comunicação com a API PHP (Falls Car).
- *
- * Ajuste BASE_URL conforme o endereço onde o backend estiver publicado.
- * Ex.: se o backend for servido em http://localhost/falls-car/backend,
- * a API fica acessível em http://localhost/falls-car/backend/api/...
- */
 const API = {
     BASE_URL: 'http://localhost/falls-car/backend/api',
 
@@ -31,11 +24,6 @@ const API = {
         return !!this.getToken();
     },
 
-    /**
-     * Executa uma chamada HTTP para a API e devolve o corpo já
-     * decodificado. Lança um erro com a mensagem vinda do backend
-     * quando a resposta não é de sucesso.
-     */
     async chamar(caminho, { metodo = 'GET', corpo = null, autenticado = false } = {}) {
         const headers = { 'Content-Type': 'application/json' };
 
@@ -67,7 +55,7 @@ const API = {
         return json.dados;
     },
 
-    // ---- Autenticação ---------------------------------------------------
+    
     cadastrar(dados) {
         return this.chamar('/cadastro', { metodo: 'POST', corpo: dados });
     },
@@ -86,7 +74,7 @@ const API = {
         }
     },
 
-    // ---- Veículos ---------------------------------------------------------
+    
     listarVeiculos(filtros = {}) {
         const params = new URLSearchParams(filtros).toString();
         return this.chamar(`/veiculos${params ? '?' + params : ''}`);
@@ -96,7 +84,7 @@ const API = {
         return this.chamar(`/veiculos/${id}`);
     },
 
-    // ---- Cliente ------------------------------------------------------
+    
     obterPerfil() {
         return this.chamar('/cliente/perfil', { autenticado: true });
     },
@@ -105,7 +93,7 @@ const API = {
         return this.chamar('/cliente/perfil', { metodo: 'PUT', corpo: dados, autenticado: true });
     },
 
-    // ---- Reservas -------------------------------------------------------
+    
     criarReserva(dados) {
         return this.chamar('/reservas', { metodo: 'POST', corpo: dados, autenticado: true });
     },
@@ -152,14 +140,12 @@ const API = {
     },
 };
 
-/** Protege páginas que exigem login, redirecionando se necessário. */
 function exigirLogin() {
     if (!API.estaLogado()) {
         window.location.href = 'login.html';
     }
 }
 
-/** Mostra uma mensagem de alerta (erro ou sucesso) em um elemento. */
 function mostrarAlerta(elemento, mensagem, tipo = 'erro') {
     elemento.textContent = mensagem;
     elemento.className = `alerta alerta-${tipo} mostrar`;
@@ -178,10 +164,6 @@ function formatarData(dataIso) {
     return data.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
 }
 
-/**
- * Preenche a área de usuário da barra superior (login/cadastro ou
- * nome do cliente + botão sair), reaproveitada em todas as páginas.
- */
 function montarTopbar() {
     const areaUsuario = document.getElementById('area-usuario');
     if (!areaUsuario) return;
