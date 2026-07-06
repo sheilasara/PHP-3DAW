@@ -2,14 +2,6 @@
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/Reserva.php';
 
-/**
- * Modelo responsável pela tabela "pagamentos".
- *
- * Regra de negócio: o pagamento é sempre antecipado e integral. Apenas
- * após um pagamento com status "aprovado" a reserva passa para
- * "confirmada". Este modelo simula a aprovação (não há integração real
- * com um gateway de pagamento, o que está fora do escopo acadêmico).
- */
 class Pagamento
 {
     private PDO $pdo;
@@ -39,7 +31,7 @@ class Pagamento
 
         $this->pdo->beginTransaction();
         try {
-            // Simulação de aprovação automática (ambiente acadêmico).
+            
             $stmt = $this->pdo->prepare(
                 'INSERT INTO pagamentos (id_reserva, valor, forma_pagamento, status)
                  VALUES (:id_reserva, :valor, :forma, "aprovado")'
