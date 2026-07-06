@@ -1,10 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/database.php';
 
-/**
- * Modelo responsável pelo acesso a dados da tabela "clientes".
- * Também concentra a criação/validação de sessões (login).
- */
 class Cliente
 {
     private PDO $pdo;
