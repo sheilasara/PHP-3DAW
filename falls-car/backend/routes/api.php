@@ -1,31 +1,4 @@
 <?php
-/**
- * Front Controller / Roteador da API REST.
- *
- * Todas as requisições passam por este arquivo (ver .htaccess), que
- * identifica o método HTTP e o caminho solicitado e despacha para o
- * controlador correspondente.
- *
- * Rotas disponíveis (todas retornam JSON):
- *
- *   POST   /api/cadastro                    - cria um novo cliente
- *   POST   /api/login                       - autentica e retorna token
- *   POST   /api/logout                      - encerra a sessão (autenticado)
- *
- *   GET    /api/veiculos?cidade=&categoria= - lista veículos disponíveis
- *   GET    /api/veiculos/{id}               - detalhe de um veículo
- *
- *   GET    /api/cliente/perfil              - dados do cliente logado (autenticado)
- *   PUT    /api/cliente/perfil              - atualiza dados do cliente (autenticado)
- *
- *   POST   /api/reservas                    - cria uma reserva (autenticado)
- *   GET    /api/reservas/cliente?status=    - lista reservas do cliente (autenticado)
- *   GET    /api/reservas/{id}               - detalhe de uma reserva (autenticado)
- *   POST   /api/reservas/{id}/pagamento     - efetua o pagamento antecipado (autenticado)
- *   PUT    /api/reservas/{id}/cancelar      - cancela a reserva até 24h antes (autenticado)
- *   PUT    /api/reservas/{id}/retirada      - confirma retirada do veículo (autenticado)
- *   PUT    /api/reservas/{id}/devolucao     - confirma devolução do veículo (autenticado)
- */
 
 require_once __DIR__ . '/../config/cors.php';
 require_once __DIR__ . '/../helpers/Response.php';
@@ -35,8 +8,6 @@ require_once __DIR__ . '/../controllers/ClienteController.php';
 require_once __DIR__ . '/../controllers/VeiculoController.php';
 require_once __DIR__ . '/../controllers/ReservaController.php';
 
-// Remove o prefixo do script (ex.: /backend/routes/api.php ou /api) da URI
-// para obter apenas o caminho lógico da rota, ex.: "/reservas/12/cancelar".
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $basePath = '/api';
 $path = substr($uri, strpos($uri, $basePath) !== false ? strpos($uri, $basePath) + strlen($basePath) : 0);
@@ -48,8 +19,7 @@ $query = $_GET;
 
 $segmentos = explode('/', trim($path, '/'));
 
-try {
-    // ---- Rotas públicas (sem autenticação) ---------------------------
+try
     if ($metodo === 'POST' && $path === '/cadastro') {
         (new AuthController())->cadastrar($corpo);
         exit;
@@ -70,7 +40,6 @@ try {
         exit;
     }
 
-    // ---- A partir daqui, todas as rotas exigem autenticação ----------
     if ($metodo === 'POST' && $path === '/logout') {
         (new AuthController())->logout();
         exit;
