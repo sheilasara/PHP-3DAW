@@ -1,13 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/database.php';
 
-/**
- * Modelo responsável pelo acesso a dados da tabela "veiculos".
- *
- * Regra de negócio (RN): a listagem para o cliente sempre considera
- * "proximidade / mesma cidade da retirada" -> filtro obrigatório por
- * cidade da loja quando informado.
- */
 class Veiculo
 {
     private PDO $pdo;
@@ -17,10 +10,6 @@ class Veiculo
         $this->pdo = Database::getConnection();
     }
 
-    /**
-     * Lista veículos disponíveis, opcionalmente filtrando por cidade da
-     * loja de retirada e/ou categoria.
-     */
     public function listarDisponiveis(?string $cidade = null, ?string $categoria = null): array
     {
         $sql = 'SELECT v.id_veiculo, v.placa, v.marca, v.modelo, v.ano, v.cor, v.categoria,
@@ -68,11 +57,6 @@ class Veiculo
         $stmt->execute(['status' => $status, 'id' => $idVeiculo]);
     }
 
-    /**
-     * Retorna, dentre veículos disponíveis na mesma categoria e cidade,
-     * uma alternativa em caso de indisponibilidade (RCL 8 do minimundo:
-     * reserva de categoria superior quando a desejada está indisponível).
-     */
     public function sugerirAlternativa(string $cidade, string $categoria): ?array
     {
         $ordemCategorias = ['economico', 'intermediario', 'suv', 'luxo'];
