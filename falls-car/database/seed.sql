@@ -1,6 +1,3 @@
--- =====================================================================
--- Falls Car - Dados de exemplo (seed) para testes da área do cliente
--- =====================================================================
 USE falls_car;
 
 INSERT INTO lojas (nome, cidade, estado, endereco, telefone) VALUES
@@ -22,10 +19,6 @@ INSERT INTO veiculos (placa, marca, modelo, ano, cor, categoria, quilometragem, 
 ('VWX8K67', 'Toyota',    'Corolla',   2023, 'Branco',  'intermediario',  16000, 0, 215.00, 'disponivel', 5),
 ('YZA9L89', 'Jeep',      'Renegade',  2022, 'Preto',   'suv',            25000, 0, 260.00, 'reservado', 5);
 
--- Cliente de teste (senha: "senha123").
--- IMPORTANTE: o hash abaixo é apenas ilustrativo. Gere um hash real do seu
--- ambiente PHP com: php backend/utils/gerar_hash.php senha123
--- e substitua o valor antes de usar em um ambiente de teste real.
 INSERT INTO clientes (nome, cpf, cnh, email, senha_hash, telefone, endereco, id_loja_padrao) VALUES
 ('Maria Souza', '123.456.789-00', '01234567890', 'maria.souza@email.com',
  '$2y$10$ZAGRhNUBxDSIUfJn7NM1ku2X50zYEe4H3xUPvX1S1tgIsz3EYJQnC', -- gerar novamente com password_hash()
