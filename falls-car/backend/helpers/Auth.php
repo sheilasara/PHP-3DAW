@@ -2,20 +2,8 @@
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/Response.php';
 
-/**
- * Middleware simples de autenticação baseado em token de sessão.
- *
- * Fluxo: no login, um token aleatório é gerado e salvo na tabela
- * "sessoes" com validade de algumas horas. O frontend deve enviar esse
- * token em toda requisição autenticada no cabeçalho:
- *   Authorization: Bearer <token>
- */
 class Auth
 {
-    /**
-     * Valida o token do cabeçalho Authorization e retorna o id_cliente
-     * correspondente. Encerra a requisição com erro 401 se inválido.
-     */
     public static function clienteAutenticado(): int
     {
         $headers = self::getHeaders();
@@ -47,7 +35,6 @@ class Auth
             return getallheaders();
         }
 
-        // Fallback para servidores onde getallheaders() não existe (ex.: alguns PHP-FPM/Nginx).
         $headers = [];
         foreach ($_SERVER as $name => $value) {
             if (str_starts_with($name, 'HTTP_')) {
