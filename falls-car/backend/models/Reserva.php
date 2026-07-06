@@ -1,16 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/database.php';
 
-/**
- * Modelo responsável pela tabela "reservas" e por orquestrar as regras
- * de negócio centrais do sistema:
- *
- *  - Períodos fixos de locação: 7, 15 ou 30 dias.
- *  - Pagamento antecipado obrigatório antes da confirmação.
- *  - Retirada e devolução na mesma cidade.
- *  - Locação só inicia de fato após a retirada do veículo.
- *  - Cancelamento permitido até 24h antes do início previsto.
- */
 class Reserva
 {
     private PDO $pdo;
@@ -114,8 +104,7 @@ class Reserva
                 }
             }
 
-            // Veículo passa a "reservado" para não ser ofertado a outro cliente
-            // enquanto o pagamento antecipado não é concluído/expira.
+            
             $this->pdo->prepare('UPDATE veiculos SET status = "reservado" WHERE id_veiculo = :id')
                 ->execute(['id' => $veiculo['id_veiculo']]);
 
@@ -180,11 +169,6 @@ class Reserva
         return $stmt->fetchAll();
     }
 
-    /**
-     * Confirma a reserva após pagamento aprovado (chamado pelo
-     * PagamentoController). Não altera o status do veículo aqui: ele
-     * permanece "reservado" até a retirada física.
-     */
     public function confirmar(int $idReserva): void
     {
         $stmt = $this->pdo->prepare(
@@ -193,10 +177,6 @@ class Reserva
         $stmt->execute(['id' => $idReserva]);
     }
 
-    /**
-     * Cancela uma reserva, respeitando a regra de até 24h antes do
-     * início previsto. Libera o veículo para nova reserva.
-     */
     public function cancelar(int $idReserva, int $idCliente, ?string $motivo = null): void
     {
         $reserva = $this->buscarPorId($idReserva);
@@ -236,10 +216,6 @@ class Reserva
         }
     }
 
-    /**
-     * Registra a retirada física do veículo. Só a partir deste momento
-     * a locação de fato "inicia", conforme regra do minimundo.
-     */
     public function confirmarRetirada(int $idReserva, int $idCliente, int $kmRetirada): array
     {
         $reserva = $this->buscarPorId($idReserva);
@@ -274,9 +250,6 @@ class Reserva
         return $this->buscarPorId($idReserva);
     }
 
-    /**
-     * Registra a devolução física do veículo, encerrando a locação.
-     */
     public function confirmarDevolucao(int $idReserva, int $idCliente, int $kmDevolucao): array
     {
         $reserva = $this->buscarPorId($idReserva);
