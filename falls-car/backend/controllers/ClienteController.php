@@ -2,9 +2,6 @@
 require_once __DIR__ . '/../models/Cliente.php';
 require_once __DIR__ . '/../helpers/Response.php';
 
-/**
- * Controlador da área de perfil do cliente autenticado.
- */
 class ClienteController
 {
     private Cliente $clienteModel;
@@ -14,7 +11,6 @@ class ClienteController
         $this->clienteModel = new Cliente();
     }
 
-    /** GET /cliente/perfil */
     public function perfil(int $idCliente): void
     {
         $cliente = $this->clienteModel->buscarPorId($idCliente);
@@ -26,7 +22,6 @@ class ClienteController
         Response::sucesso($cliente);
     }
 
-    /** PUT /cliente/perfil */
     public function atualizarPerfil(int $idCliente, array $corpo): void
     {
         $this->clienteModel->atualizarPerfil($idCliente, $corpo);
