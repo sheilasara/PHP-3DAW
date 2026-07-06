@@ -3,10 +3,6 @@ require_once __DIR__ . '/../models/Reserva.php';
 require_once __DIR__ . '/../models/Pagamento.php';
 require_once __DIR__ . '/../helpers/Response.php';
 
-/**
- * Controlador de reservas: criação, consulta, pagamento, retirada,
- * devolução e cancelamento — todas as ações da área do cliente.
- */
 class ReservaController
 {
     private Reserva $reservaModel;
@@ -18,7 +14,6 @@ class ReservaController
         $this->pagamentoModel = new Pagamento();
     }
 
-    /** POST /reservas */
     public function criar(int $idCliente, array $corpo): void
     {
         $obrigatorios = ['id_veiculo', 'id_loja_devolucao', 'periodo_dias', 'data_inicio_prevista'];
@@ -40,7 +35,6 @@ class ReservaController
         }
     }
 
-    /** GET /reservas/cliente?status=... */
     public function listarDoCliente(int $idCliente, array $query): void
     {
         $status = $query['status'] ?? null;
@@ -48,7 +42,6 @@ class ReservaController
         Response::sucesso($reservas);
     }
 
-    /** GET /reservas/{id} */
     public function detalhar(int $idCliente, int $idReserva): void
     {
         $reserva = $this->reservaModel->buscarPorId($idReserva);
@@ -60,7 +53,6 @@ class ReservaController
         Response::sucesso($reserva);
     }
 
-    /** POST /reservas/{id}/pagamento */
     public function pagar(int $idCliente, int $idReserva, array $corpo): void
     {
         if (empty($corpo['forma_pagamento'])) {
@@ -77,7 +69,6 @@ class ReservaController
         }
     }
 
-    /** PUT /reservas/{id}/cancelar */
     public function cancelar(int $idCliente, int $idReserva, array $corpo): void
     {
         try {
@@ -88,7 +79,6 @@ class ReservaController
         }
     }
 
-    /** PUT /reservas/{id}/retirada */
     public function confirmarRetirada(int $idCliente, int $idReserva, array $corpo): void
     {
         $kmRetirada = (int) ($corpo['km_retirada'] ?? 0);
@@ -101,7 +91,6 @@ class ReservaController
         }
     }
 
-    /** PUT /reservas/{id}/devolucao */
     public function confirmarDevolucao(int $idCliente, int $idReserva, array $corpo): void
     {
         $kmDevolucao = (int) ($corpo['km_devolucao'] ?? 0);
