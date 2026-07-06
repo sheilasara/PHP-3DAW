@@ -1,7 +1,5 @@
 <?php
-/**
- * Helper para padronizar todas as respostas JSON da API.
- */
+
 class Response
 {
     public static function sucesso($dados = null, string $mensagem = 'Operação realizada com sucesso.', int $codigoHttp = 200): void
