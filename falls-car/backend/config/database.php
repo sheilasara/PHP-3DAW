@@ -1,11 +1,4 @@
 <?php
-/**
- * Configuração e conexão com o banco de dados (MySQL via PDO).
- *
- * Ajuste as constantes abaixo conforme o ambiente (local/produção).
- * Em um cenário real, estes valores viriam de variáveis de ambiente,
- * nunca de código versionado.
- */
 
 class Database
 {
@@ -17,10 +10,6 @@ class Database
     private const PASS = '';
     private const CHARSET = 'utf8mb4';
 
-    /**
-     * Retorna uma conexão PDO única (padrão Singleton) para toda a
-     * requisição, evitando múltiplas conexões desnecessárias.
-     */
     public static function getConnection(): PDO
     {
         if (self::$connection === null) {
