@@ -3,9 +3,6 @@ require_once __DIR__ . '/../models/Cliente.php';
 require_once __DIR__ . '/../helpers/Response.php';
 require_once __DIR__ . '/../helpers/Auth.php';
 
-/**
- * Controlador de autenticação: cadastro, login e logout de clientes.
- */
 class AuthController
 {
     private Cliente $clienteModel;
@@ -15,7 +12,7 @@ class AuthController
         $this->clienteModel = new Cliente();
     }
 
-    /** POST /cadastro */
+    
     public function cadastrar(array $corpo): void
     {
         $obrigatorios = ['nome', 'cpf', 'cnh', 'email', 'senha'];
@@ -47,7 +44,6 @@ class AuthController
         Response::sucesso($cliente, 'Cadastro realizado com sucesso.', 201);
     }
 
-    /** POST /login */
     public function login(array $corpo): void
     {
         if (empty($corpo['email']) || empty($corpo['senha'])) {
@@ -73,7 +69,6 @@ class AuthController
         ], 'Login realizado com sucesso.');
     }
 
-    /** POST /logout */
     public function logout(): void
     {
         $headers = getallheaders();
