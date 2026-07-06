@@ -45,7 +45,6 @@ class Reserva
                 throw new RuntimeException('Loja de devolução não encontrada.');
             }
 
-            // Regra: devolução deve ocorrer na mesma cidade da retirada.
             if ($lojaDevolucao['cidade'] !== $veiculo['cidade']) {
                 throw new RuntimeException(
                     'A devolução deve ocorrer em uma loja da mesma cidade da retirada (' . $veiculo['cidade'] . ').'
