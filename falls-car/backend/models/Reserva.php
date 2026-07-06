@@ -85,8 +85,6 @@ class Reserva
 
             $idReserva = (int) $this->pdo->lastInsertId();
 
-            // Motorista adicional é opcional; a lista de motoristas vem em
-            // $dados['motoristas'] com nome/cpf/cnh de cada um.
             if (!empty($dados['motoristas']) && is_array($dados['motoristas'])) {
                 $motoristaStmt = $this->pdo->prepare(
                     'INSERT INTO motoristas_adicionais (id_reserva, nome, cpf, cnh, valor_extra)
