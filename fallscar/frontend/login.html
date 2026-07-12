@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Login - Falls Car</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+    <div class="logo">Falls<span>Car</span></div>
+    <nav>
+        <a href="index.html">Inicio</a>
+        <a href="veiculos.html">Veiculos</a>
+        <a href="minhas_reservas.html">Minhas Reservas</a>
+        <a href="login.html" id="linkLogin">Login</a>
+        <a href="cadastro.html" id="linkCadastro">Cadastrar</a>
+        <a href="#" id="linkSair" style="display:none;">Sair</a>
+    </nav>
+</header>
+
+<main>
+    <h1>Login</h1>
+
+    <div id="mensagem"></div>
+
+    <form id="formLogin">
+        <div class="campo">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="campo">
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" name="senha" required>
+        </div>
+
+        <button type="submit">Entrar</button>
+    </form>
+
+    <p style="text-align:center; margin-top:15px;">
+        Ainda nao tem conta? <a href="cadastro.html"><strong>Cadastre-se</strong></a>
+    </p>
+</main>
+
+<script src="js/login.js"></script>
+</body>
+</html>

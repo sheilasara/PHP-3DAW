@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Reservar Veiculo - Falls Car</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+    <div class="logo">Falls<span>Car</span></div>
+    <nav>
+        <a href="index.html">Inicio</a>
+        <a href="veiculos.html">Veiculos</a>
+        <a href="minhas_reservas.html">Minhas Reservas</a>
+        <a href="login.html" id="linkLogin">Login</a>
+        <a href="cadastro.html" id="linkCadastro">Cadastrar</a>
+        <a href="#" id="linkSair" style="display:none;">Sair</a>
+    </nav>
+</header>
+
+<main>
+    <h1>Reservar Veiculo</h1>
+
+    <div id="resumoVeiculo"></div>
+    <div id="mensagem"></div>
+
+    <form id="formReserva">
+        <input type="hidden" id="veiculo_id" name="veiculo_id">
+
+        <div class="campo">
+            <label for="loja_retirada">Loja de retirada</label>
+            <select id="loja_retirada" name="loja_retirada" required></select>
+        </div>
+
+        <div class="campo">
+            <label for="loja_devolucao">Loja de devolucao</label>
+            <select id="loja_devolucao" name="loja_devolucao" required></select>
+        </div>
+        <p style="font-size:13px; color:#666; margin-top:-10px; margin-bottom:15px;">
+            A devolucao deve ser feita na mesma cidade da retirada.
+        </p>
+
+        <div class="campo">
+            <label for="periodo_dias">Periodo da locacao</label>
+            <select id="periodo_dias" name="periodo_dias" required>
+                <option value="">Selecione</option>
+                <option value="7">7 dias</option>
+                <option value="15">15 dias</option>
+                <option value="30">30 dias</option>
+            </select>
+        </div>
+
+        <div class="campo">
+            <label for="data_inicio">Data de retirada</label>
+            <input type="date" id="data_inicio" name="data_inicio" required>
+        </div>
+
+        <div class="campo">
+            <label>
+                <input type="checkbox" id="temMotorista" name="temMotorista">
+                Adicionar motorista adicional (opcional)
+            </label>
+        </div>
+
+        <div id="dadosMotorista" style="display:none;">
+            <div class="campo">
+                <label for="motorista_nome">Nome do motorista adicional</label>
+                <input type="text" id="motorista_nome" name="motorista_nome">
+            </div>
+            <div class="campo">
+                <label for="motorista_cpf">CPF do motorista adicional</label>
+                <input type="text" id="motorista_cpf" name="motorista_cpf">
+            </div>
+            <div class="campo">
+                <label for="motorista_habilitacao">Habilitacao do motorista adicional</label>
+                <input type="text" id="motorista_habilitacao" name="motorista_habilitacao">
+            </div>
+        </div>
+
+        <p id="valorEstimado" style="font-weight:bold; margin-bottom:15px;"></p>
+
+        <button type="submit">Confirmar Reserva</button>
+    </form>
+</main>
+
+<script src="js/reserva.js"></script>
+</body>
+</html>
